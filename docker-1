@@ -1,0 +1,24 @@
+FROM openjdk:17-jdk-slim
+
+ENV ANDROID_HOME=/opt/android-sdk
+ENV PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
+
+RUN apt-get update && apt-get install -y \
+    wget unzip tar python3 python3-pip git curl \
+    lib32stdc++6 lib32z1 && \
+    mkdir -p $ANDROID_HOME && \
+    wget -q https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip && \
+    unzip -q commandlinetools-linux-*.zip -d $ANDROID_HOME && \
+    mkdir -p $ANDROID_HOME/cmdline-tools/latest && \
+    mv $ANDROID_HOME/cmdline-tools/cmdline-tools/* $ANDROID_HOME/cmdline-tools/latest/ && \
+    yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager \
+        "platform-tools" "platforms;android-34" "build-tools;34.0.0" && \
+    rm commandlinetools-linux-*.zip
+
+COPY requirements.txt /tmp/
+RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
+
+WORKDIR /mythic
+COPY . /mythic/
+
+ENTRYPOINT ["python3", "builder/build_apk.py"]

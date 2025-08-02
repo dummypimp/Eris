@@ -1,0 +1,22 @@
+{
+  "name": "mythic-mobile-dashboard",
+  "version": "1.0.0",
+  "description": "Production-Ready Mythic Mobile C2 Dashboard",
+  "main": "index.js",
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@apollo/client": "^3.7.7",
+    "graphql": "^16.6.0",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "styled-components": "^5.3.6"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^3.0.0",
+    "vite": "^4.0.0"
+  }
+}

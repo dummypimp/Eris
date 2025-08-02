@@ -1,0 +1,34 @@
+# Core dependencies
+cryptography==41.0.4
+pycryptodome==3.18.0
+requests==2.31.0
+jinja2==3.1.2
+lxml==5.1.0
+androguard==4.1.2
+aiohttp==3.9.1
+asyncio-mqtt==0.16.1
+dnspython==2.4.2
+firebase-admin==6.4.0
+pydantic==2.5.0
+# Android specific dependencies
+
+# APK manipulation
+python-magic==0.4.27
+xmltodict==0.13.0
+
+# Build and packaging
+setuptools==68.2.2
+wheel==0.41.2
+
+# JSON handling
+ujson==5.8.0
+
+# File system operations
+pathlib2==2.3.7
+
+# Compression
+gzip-reader==0.1
+
+# Mythic integration
+mythic-payloadtype-container==0.1.18
+mythic-container==0.1.18
