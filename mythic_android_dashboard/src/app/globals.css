@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 11%; /* Obsidian Black */
+    --foreground: 0 0% 94.1%; /* Ghost White */
+    --card: 0 0% 16.5%; /* Iron Grey */
+    --card-foreground: 0 0% 94.1%; /* Ghost White */
+    --popover: 0 0% 16.5%; /* Iron Grey */
+    --popover-foreground: 0 0% 94.1%; /* Ghost White */
+    --primary: 355 93% 43.5%; /* Mythic Red (approximated) */
+    --primary-foreground: 0 0% 94.1%;
+    --secondary: 0 0% 20%;
+    --secondary-foreground: 0 0% 94.1%;
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 69%; /* Slate Gray */
+    --accent: 178 98% 44%; /* Teal */
+    --accent-foreground: 0 0% 94.1%;
+    --destructive: 4 90% 58%; /* Critical Flame */
+    --destructive-foreground: 0 0% 94.1%;
+    --success: 122 39% 49%; /* Agent Green */
+    --success-foreground: 0 0% 98%;
+    --warning: 50 98% 60%; /* Terminal Gold */
+    --warning-foreground: 0 0% 10%;
+    --border: 0 0% 25.5%;
+    --input: 0 0% 25.5%;
+    --ring: 221 83% 53%; /* Pulse Blue */
+    --radius: 0.5rem;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+
+  .dark {
+    --background: 0 0% 11%; /* Obsidian Black */
+    --foreground: 0 0% 94.1%; /* Ghost White */
+    --card: 0 0% 16.5%; /* Iron Grey */
+    --card-foreground: 0 0% 94.1%; /* Ghost White */
+    --popover: 0 0% 16.5%; /* Iron Grey */
+    --popover-foreground: 0 0% 94.1%; /* Ghost White */
+    --primary: 355 93% 43.5%; /* Mythic Red (approximated) */
+    --primary-foreground: 0 0% 94.1%;
+    --secondary: 0 0% 20%;
+    --secondary-foreground: 0 0% 94.1%;
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 69%; /* Slate Gray */
+    --accent: 178 98% 44%; /* Teal */
+    --accent-foreground: 0 0% 94.1%;
+    --destructive: 4 90% 58%; /* Critical Flame */
+    --destructive-foreground: 0 0% 94.1%;
+    --success: 122 39% 49%; /* Agent Green */
+    --success-foreground: 0 0% 98%;
+    --warning: 50 98% 60%; /* Terminal Gold */
+    --warning-foreground: 0 0% 10%;
+    --border: 0 0% 25.5%;
+    --input: 0 0% 25.5%;
+    --ring: 221 83% 53%; /* Pulse Blue */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
