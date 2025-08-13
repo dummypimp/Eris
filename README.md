@@ -153,7 +153,7 @@ Eris includes a sophisticated web-based dashboard built with modern technologies
 
 <p align="center">
   <img src="assets/Frida.png" alt="Frida Toolkit" width="45%">
-  <img src="assets/Edit-Delete agent.png" alt="Edit/Delete Agents" width="45%">
+  <img src="assets/Edit-Delete agents.png" alt="Edit/Delete Agents" width="45%">
 </p>
 
 ---
