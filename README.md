@@ -20,7 +20,7 @@
 
 ## 🌟 Overview
 
-**Eris** is a comprehensive Android Command & Control platform designed for advanced persistence, surveillance, and data exfiltration capabilities. Built specifically for the [Mythic 3.3 Framework](https://github.com/its-a-feature/Mythic), Eris provides sophisticated Android exploitation capabilities with support for Android 12-16 (API levels 31-36) and advanced anti-detection features.
+**Eris** is a comprehensive Android Command & Control platform designed for advanced persistence, surveillance, and data exfiltration capabilities. Built specifically for the [Mythic 3.3 Framework](https://github.com/its-a-feature/Mythic), Eris provides sophisticated Android exploitation capabilities with support for Android 12-16 (API levels 31-36[theoretical]) and advanced anti-detection features.
 
 ### 🎯 Key Features
 
