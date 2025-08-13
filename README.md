@@ -138,7 +138,8 @@ Eris includes a sophisticated web-based dashboard built with modern technologies
 - **Real-time Updates**: WebSocket connections for live data
 - **Authentication**: JWT-based secure authentication
 
-### 📱 Dashboard Screenshots
+### 📱 Dashboard Screenshots 
+[**Mock Img's from Development**]
 
 <p align="center">
   <img src="assets/Device selection.png" alt="Device Selection" width="45%">
@@ -152,6 +153,7 @@ Eris includes a sophisticated web-based dashboard built with modern technologies
 
 <p align="center">
   <img src="assets/Frida.png" alt="Frida Toolkit" width="45%">
+  <img src="assets/Edit-Delete agents.png" alt="Edit/Delete Agents" width="45%">
 </p>
 
 ---
