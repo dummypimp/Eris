@@ -138,7 +138,8 @@ Eris includes a sophisticated web-based dashboard built with modern technologies
 - **Real-time Updates**: WebSocket connections for live data
 - **Authentication**: JWT-based secure authentication
 
-### 📱 Dashboard Screenshots **Mock Img's from Development**
+### 📱 Dashboard Screenshots 
+[**Mock Img's from Development**]
 
 <p align="center">
   <img src="assets/Device selection.png" alt="Device Selection" width="45%">
