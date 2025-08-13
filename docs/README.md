@@ -1,7 +1,7 @@
 # Eris Android Agent
 
 <p align="center">
-  <img src="assets/Eris.svg" alt="Eris Android Agent Logo" width="300" height="300">
+  <img src="assets/Eris.png" alt="Eris Android Agent Logo" width="300" height="300">
 </p>
 
 <p align="center">
