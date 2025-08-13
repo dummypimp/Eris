@@ -407,16 +407,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support & Contact
 
 - **GitHub Issues**: [Report Bugs & Feature Requests](https://github.com/dummypimp/Eris/issues)
-- **Documentation**: [Complete Documentation Hub](https://eris-docs.example.com)
-- **Community**: [Discord Server](https://discord.gg/eris-android)
-- **Professional Support**: [enterprise@eris-agent.com](mailto:enterprise@eris-agent.com)
 
 ---
 
 <p align="center">
   <strong>🎯 Happy Hunting with Eris! 🎯</strong>
-</p>
-
-<p align="center">
-  <img src="assets/Eris.png" alt="Eris Logo" width="100">
 </p>
