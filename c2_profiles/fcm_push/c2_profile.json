@@ -1,0 +1,99 @@
+{
+  "name": "fcm_push",
+  "author": "@RedTeam", 
+  "description": "Firebase Cloud Messaging C2 profile for real-time command delivery with wake-on-demand capabilities",
+  "version": "1.0.0",
+  "is_p2p": false,
+  "is_server_routed": true,
+  "parameters": [
+    {
+      "name": "firebase_server_key",
+      "description": "Firebase Server Key",
+      "default_value": "",
+      "required": true,
+      "parameter_type": "String"
+    },
+    {
+      "name": "firebase_project_id",
+      "description": "Firebase Project ID", 
+      "default_value": "",
+      "required": true,
+      "parameter_type": "String"
+    },
+    {
+      "name": "fcm_registration_token",
+      "description": "FCM Registration Token",
+      "default_value": "",
+      "required": false,
+      "parameter_type": "String"
+    },
+    {
+      "name": "fallback_callback_host",
+      "description": "Fallback HTTPS Host",
+      "default_value": "https://domain.com",
+      "verifier_regex": "^https://[a-zA-Z0-9]+",
+      "required": true,
+      "parameter_type": "String"
+    },
+    {
+      "name": "fallback_callback_port", 
+      "description": "Fallback HTTPS Port",
+      "default_value": 443,
+      "verifier_regex": "^[0-9]+$",
+      "required": true,
+      "parameter_type": "Number"
+    },
+    {
+      "name": "message_priority",
+      "description": "FCM Message Priority",
+      "default_value": "high",
+      "choices": ["normal", "high"],
+      "required": false,
+      "parameter_type": "ChooseOne"
+    },
+    {
+      "name": "encrypted_exchange_check",
+      "description": "Perform Key Exchange",
+      "default_value": true,
+      "required": false,
+      "parameter_type": "Boolean"
+    },
+    {
+      "name": "notification_title",
+      "description": "Notification Title Template",
+      "default_value": "System Update",
+      "required": false,
+      "parameter_type": "String"
+    },
+    {
+      "name": "notification_body",
+      "description": "Notification Body Template", 
+      "default_value": "Update available",
+      "required": false,
+      "parameter_type": "String"
+    },
+    {
+      "name": "data_only_messages",
+      "description": "Send data-only messages (no notification)",
+      "default_value": true,
+      "required": false,
+      "parameter_type": "Boolean"
+    },
+    {
+      "name": "wake_lock_duration",
+      "description": "Wake lock duration in seconds",
+      "default_value": 30,
+      "verifier_regex": "^[0-9]+$",
+      "required": false,
+      "parameter_type": "Number"
+    },
+    {
+      "name": "killdate",
+      "description": "Kill Date (YYYY-MM-DD)",
+      "default_value": "2025-12-31",
+      "verifier_regex": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+      "required": false,
+      "parameter_type": "Date"
+    }
+  ]
+}

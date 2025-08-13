@@ -27,12 +27,33 @@ RUN mkdir -p ${ANDROID_SDK_ROOT}/cmdline-tools && \
 
 # Accept Android SDK licenses and install components
 RUN yes | sdkmanager --licenses && \
-    sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.2"
+    sdkmanager "platform-tools" "platforms;android-33" "platforms;android-34" "build-tools;33.0.2" "build-tools;34.0.0" && \
+    sdkmanager "ndk;25.2.9519653"
+
+# Set NDK environment
+ENV ANDROID_NDK_ROOT=${ANDROID_SDK_ROOT}/ndk/25.2.9519653
+ENV PATH=${PATH}:${ANDROID_NDK_ROOT}
 
 # Install APK manipulation tools
 RUN wget https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_2.8.1.jar -O /opt/apktool.jar && \
     echo '#!/bin/bash\njava -jar /opt/apktool.jar "$@"' > /usr/local/bin/apktool && \
     chmod +x /usr/local/bin/apktool
+
+# Install additional build tools
+# Install baksmali/smali
+RUN wget https://github.com/JesusFreke/smali/releases/download/v2.5.2/baksmali-2.5.2.jar -O /opt/baksmali.jar && \
+    wget https://github.com/JesusFreke/smali/releases/download/v2.5.2/smali-2.5.2.jar -O /opt/smali.jar && \
+    echo '#!/bin/bash\njava -jar /opt/baksmali.jar "$@"' > /usr/local/bin/baksmali && \
+    echo '#!/bin/bash\njava -jar /opt/smali.jar "$@"' > /usr/local/bin/smali && \
+    chmod +x /usr/local/bin/baksmali /usr/local/bin/smali
+
+# Install ProGuard
+RUN wget https://github.com/Guardsquare/proguard/releases/download/v7.3.2/proguard-7.3.2.zip -O /tmp/proguard.zip && \
+    unzip /tmp/proguard.zip -d /opt/ && \
+    mv /opt/proguard-7.3.2 /opt/proguard && \
+    rm /tmp/proguard.zip && \
+    echo '#!/bin/bash\njava -jar /opt/proguard/lib/proguard.jar "$@"' > /usr/local/bin/proguard && \
+    chmod +x /usr/local/bin/proguard
 
 # Install Python dependencies
 COPY requirements.txt /tmp/

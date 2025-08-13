@@ -1,4 +1,3 @@
-
 "use client"
 
 import * as React from "react"
@@ -13,7 +12,7 @@ export const TopNav = React.forwardRef<
   const navRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
-    // Adding a simple utility class to hide the scrollbar
+
     const styleId = 'scrollbar-hide-style';
     if (document.getElementById(styleId)) {
       return;
@@ -53,7 +52,7 @@ export const TopNav = React.forwardRef<
         ref={navRef}
         className={cn(
           "flex items-center space-x-2 overflow-x-auto mx-2",
-          "scrollbar-hide", // Utility class to hide scrollbar
+          "scrollbar-hide",
           className
         )}
         {...props}

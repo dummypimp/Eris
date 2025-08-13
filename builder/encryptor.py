@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 """
 Enhanced encryptor.py - Advanced cryptographic utilities for Mythic Mobile Agent
 Supports multiple encryption algorithms with enhanced key derivation and security
@@ -18,12 +18,12 @@ from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import rsa, padding
 from cryptography.hazmat.backends import default_backend
 
-# Supported algorithms
+
 ALG_AES = "AES-256-GCM"
 ALG_CHACHA = "ChaCha20-Poly1305"
-ALG_XOR = "XOR-STREAM"  # For lightweight obfuscation
+ALG_XOR = "XOR-STREAM"
 
-# Key derivation methods
+
 KDF_HKDF = "HKDF-SHA256"
 KDF_PBKDF2 = "PBKDF2-SHA256"
 KDF_SCRYPT = "SCRYPT"
@@ -33,7 +33,7 @@ class EnhancedEncryptor:
         self.kdf_method = kdf_method
         self.context_salt = b"mythic-mobile-agent-v2"
         
-    def _derive_key(self, master: bytes, salt: bytes, length: int = 32, 
+    def _derive_key(self, master: bytes, salt: bytes, length: int = 32,
                    iterations: int = 100000) -> bytes:
         """Enhanced key derivation with multiple KDF options"""
         if self.kdf_method == KDF_HKDF:
@@ -59,20 +59,20 @@ class EnhancedEncryptor:
                 algorithm=hashes.SHA256(),
                 length=length,
                 salt=salt,
-                n=2**14,  # CPU/memory cost parameter
-                r=8,      # Block size parameter
-                p=1,      # Parallelization parameter
+                n=2**14,
+                r=8,
+                p=1,
                 backend=default_backend(),
             ).derive(master)
         
         else:
             raise ValueError(f"Unsupported KDF method: {self.kdf_method}")
 
-    def key_from_campaign_device(self, campaign: str, device: str, 
-                                android_version: int = 34, 
+    def key_from_campaign_device(self, campaign: str, device: str,
+                                android_version: int = 34,
                                 alg: str = ALG_AES) -> bytes:
         """Enhanced key derivation with Android version awareness"""
-        # Include Android version in key derivation for version-specific keys
+
         seed_components = [
             campaign.encode(),
             device.encode(),
@@ -80,12 +80,12 @@ class EnhancedEncryptor:
             os.urandom(16) if not hasattr(self, '_static_entropy') else self._static_entropy
         ]
         
-        # Use deterministic entropy for reproducible keys in same campaign/device
+
         self._static_entropy = hashlib.sha256(f"{campaign}:{device}".encode()).digest()[:16]
         
         seed = b"".join([
             campaign.encode(),
-            device.encode(), 
+            device.encode(),
             str(android_version).encode(),
             self._static_entropy
         ])
@@ -93,14 +93,14 @@ class EnhancedEncryptor:
         salt = hashlib.sha256(seed).digest()[:16]
         return self._derive_key(seed, salt, 32)
 
-    def encrypt(self, data: bytes, key: bytes, alg: str = ALG_AES, 
+    def encrypt(self, data: bytes, key: bytes, alg: str = ALG_AES,
                additional_data: Optional[bytes] = None) -> bytes:
         """Enhanced encryption with additional authenticated data support"""
         if alg == ALG_XOR:
             return self._xor_encrypt(data, key)
         
-        # Generate nonce/IV
-        nonce = secrets.token_bytes(12)  # 96-bit nonce for GCM/ChaCha20
+
+        nonce = secrets.token_bytes(12)
         
         if alg == ALG_AES:
             cipher = AESGCM(key)
@@ -109,10 +109,10 @@ class EnhancedEncryptor:
         else:
             raise ValueError(f"Unsupported algorithm: {alg}")
         
-        # Encrypt with optional additional authenticated data
+
         ciphertext = cipher.encrypt(nonce, data, additional_data)
         
-        # Format: nonce + ciphertext
+
         return nonce + ciphertext
 
     def decrypt(self, blob: bytes, key: bytes, alg: str = ALG_AES,
@@ -121,7 +121,7 @@ class EnhancedEncryptor:
         if alg == ALG_XOR:
             return self._xor_decrypt(blob, key)
         
-        # Extract nonce and ciphertext
+
         nonce, ciphertext = blob[:12], blob[12:]
         
         if alg == ALG_AES:
@@ -131,7 +131,7 @@ class EnhancedEncryptor:
         else:
             raise ValueError(f"Unsupported algorithm: {alg}")
         
-        # Decrypt with optional additional authenticated data
+
         return cipher.decrypt(nonce, ciphertext, additional_data)
 
     def _xor_encrypt(self, data: bytes, key: bytes) -> bytes:
@@ -166,7 +166,7 @@ class EnhancedEncryptor:
         
         public_key = private_key.public_key()
         
-        # Serialize keys
+
         private_pem = private_key.private_bytes(
             encoding=serialization.Encoding.PEM,
             format=serialization.PrivateFormat.PKCS8,
@@ -183,18 +183,18 @@ class EnhancedEncryptor:
     def secure_delete_key(self, key: Union[bytes, bytearray]) -> None:
         """Securely delete key from memory"""
         if isinstance(key, bytes):
-            # Convert to mutable bytearray for overwriting
+
             key = bytearray(key)
         
-        # Overwrite with random data
+
         for i in range(len(key)):
             key[i] = secrets.randbits(8)
         
-        # Overwrite with zeros
+
         for i in range(len(key)):
             key[i] = 0
 
-# Convenience functions for backward compatibility
+
 encryptor = EnhancedEncryptor()
 
 def key_from_campaign_device(campaign: str, device: str, alg: str = ALG_AES) -> bytes:

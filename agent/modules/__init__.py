@@ -3,14 +3,14 @@ Mythic Android Agent Modules
 Production-ready capability modules for mobile operations
 """
 
-# Import all available modules
+
 from . import overlay
-from . import frida_loader  
+from . import frida_loader
 from . import call_logger
 from . import filesystem
 from ..utils import offline_logger
 
-# Module registry for dynamic loading
+
 AVAILABLE_MODULES = {
     "overlay": overlay.OverlayModule,
     "frida_loader": frida_loader.FridaModule,

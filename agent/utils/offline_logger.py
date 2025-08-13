@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 """
 offline_logger.py - Production offline logging with encrypted storage
 """

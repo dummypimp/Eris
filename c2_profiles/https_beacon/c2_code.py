@@ -1,6 +1,6 @@
-#!/usr/bin/env python3
+
 """
-HTTPS Beacon C2 Implementation for Mythic Mobile Agent 
+HTTPS Beacon C2 Implementation for Mythic Mobile Agent
 """
 import asyncio
 import json
@@ -10,9 +10,9 @@ import ssl
 from typing import Dict, List, Any, Optional
 
 try:
-    from mythic_container import C2ProfileBase, C2Profile, C2ProfileParameter, C2ProfileParameterType # type: ignore
+    from mythic_container import C2ProfileBase, C2Profile, C2ProfileParameter, C2ProfileParameterType
 except ImportError:
-    # Fallback definitions for development/testing
+
     class C2ProfileBase:
         pass
     
@@ -33,7 +33,7 @@ except ImportError:
         Boolean = "boolean"
 
 try:
-    from aiohttp import web, ClientSession # type: ignore
+    from aiohttp import web, ClientSession
 except ImportError:
     web = None
     ClientSession = None
@@ -82,7 +82,7 @@ class HTTPSBeacon(C2ProfileBase):
             print(f"[!] Response submission error: {e}")
             return False
 
-# Web server implementation
+
 async def create_c2_server(beacon: HTTPSBeacon, config: Dict[str, Any]) -> Optional[Any]:
     """Create the HTTPS C2 web server"""
     if web is None:

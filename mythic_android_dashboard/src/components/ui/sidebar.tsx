@@ -1,4 +1,3 @@
-
 'use client';
 
 import {
@@ -17,13 +16,11 @@ import type { Device } from '@/lib/types';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './sheet';
 import { ScrollArea } from './scroll-area';
 
-
 interface SidebarProps {
     selectedDeviceGuid: string;
     onDeviceSelect: (device: Device) => void;
     children: React.ReactNode;
 }
-
 
 export const Sidebar = ({selectedDeviceGuid, onDeviceSelect, children}: SidebarProps) => {
   const [devices, setDevices] = React.useState<Device[]>([]);

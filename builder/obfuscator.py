@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 """
 Enhanced obfuscator.py - Advanced code obfuscation for Android 14+ detection evasion
 Includes ML-resistant techniques and enhanced string encryption
@@ -33,17 +33,17 @@ class AdvancedObfuscator:
         
         smali_files = list(smali_dir.rglob("*.smali"))
         
-        # Phase 1: Collect identifiers
+
         self._collect_identifiers(smali_files)
         
-        # Phase 2: Generate obfuscated names
+
         self._generate_obfuscated_names()
         
-        # Phase 3: Apply obfuscation
+
         for smali_file in smali_files:
             self._obfuscate_smali_file(smali_file)
             
-        # Phase 4: Add decoy methods and classes
+
         if self.level in ["strong", "maximum"]:
             self._add_decoy_code(smali_dir)
 
@@ -53,7 +53,7 @@ class AdvancedObfuscator:
             return plaintext
             
         try:
-            # Multi-layer encryption
+
             encrypted = self._multi_layer_encrypt(plaintext)
             return encrypted
         except Exception as e:
@@ -63,13 +63,13 @@ class AdvancedObfuscator:
     def randomize(self, data: str) -> str:
         """Randomize code patterns - Required by test validation"""
         try:
-            # Randomize variable names
+
             data = self._randomize_variables(data)
             
-            # Randomize method calls
+
             data = self._randomize_method_calls(data)
             
-            # Add random nop instructions
+
             data = self._add_random_nops(data)
             
             return data
@@ -80,16 +80,16 @@ class AdvancedObfuscator:
     def anti_analysis(self, code: str) -> str:
         """Add anti-analysis features - Required by test validation"""
         try:
-            # Add debugger detection
+
             code = self._add_debugger_detection(code)
             
-            # Add emulator detection
+
             code = self._add_emulator_detection(code)
             
-            # Add integrity checks
+
             code = self._add_integrity_checks(code)
             
-            # Add obfuscated control flow
+
             code = self._add_opaque_predicates(code)
             
             return code
@@ -99,7 +99,7 @@ class AdvancedObfuscator:
 
     def _randomize_variables(self, code: str) -> str:
         """Randomize variable names in smali code"""
-        # Find variable declarations
+
         var_pattern = r'(\.local|\.parameter|\.line)\s+([vp]\d+)'
         
         var_mapping = {}
@@ -109,7 +109,7 @@ class AdvancedObfuscator:
             var_name = match.group(2)
             
             if var_name not in var_mapping:
-                # Generate random variable name
+
                 var_num = random.randint(0, 15)
                 var_mapping[var_name] = f"{var_name[0]}{var_num}"
             
@@ -119,13 +119,13 @@ class AdvancedObfuscator:
 
     def _randomize_method_calls(self, code: str) -> str:
         """Randomize method call patterns"""
-        # Add random spacing and formatting
+
         lines = code.split('\n')
         randomized_lines = []
         
         for line in lines:
             if 'invoke-' in line:
-                # Add random whitespace
+
                 spaces = ' ' * random.randint(4, 8)
                 line = spaces + line.strip()
             randomized_lines.append(line)
@@ -140,7 +140,7 @@ class AdvancedObfuscator:
         for i, line in enumerate(lines):
             modified_lines.append(line)
             
-            # Occasionally add nop instructions
+
             if random.randint(1, 10) == 1 and '.method' in line:
                 nop_count = random.randint(1, 3)
                 for _ in range(nop_count):
@@ -170,7 +170,7 @@ class AdvancedObfuscator:
     .end method
 '''
         
-        # Insert debugger check after class declaration
+
         class_pattern = r'(\.class.*?\n)'
         replacement = r'\1' + debugger_check + '\n'
         
@@ -196,7 +196,7 @@ class AdvancedObfuscator:
     .end method
 '''
         
-        # Insert emulator check
+
         class_pattern = r'(\.class.*?\n)'
         replacement = r'\1' + emulator_check + '\n'
         
@@ -230,7 +230,7 @@ class AdvancedObfuscator:
 
     def _add_opaque_predicates(self, code: str) -> str:
         """Add opaque predicates to obfuscate control flow"""
-        # Add complex mathematical conditions that always evaluate to true/false
+
         opaque_predicate = '''
     # Opaque predicate - always true
     .method private static opaqueTrue()Z
@@ -251,20 +251,282 @@ class AdvancedObfuscator:
 '''
         
         return code + opaque_predicate
+    
+    def integrate_proguard(self, project_dir: Path) -> None:
+        """Integrate ProGuard with custom rules for enhanced obfuscation"""
+        print("[+] Integrating ProGuard with custom rules...")
+        
+        proguard_rules = self._generate_custom_proguard_rules()
+        proguard_file = project_dir / "proguard-rules.pro"
+        proguard_file.write_text(proguard_rules)
+        
 
-    # Keep all existing methods from the original file...
+        proguard_config = project_dir / "proguard.cfg"
+        config_content = f'''-injars build/classes
+-outjars build/obfuscated
+-libraryjars {os.environ.get('ANDROID_HOME', '/opt/android-sdk')}/platforms/android-34/android.jar
+-include proguard-rules.pro
+
+-dontpreverify
+-verbose
+-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
+-optimizationpasses 5
+-allowaccessmodification
+
+# Enhanced obfuscation settings
+-repackageclasses ''
+-allowaccessmodification
+-flattenpackagehierarchy
+-overloadaggressively
+
+# String encryption
+-adaptresourcefilenames **.properties,**.xml,**.txt,**.spec
+-adaptresourcefilecontents **.properties,META-INF/MANIFEST.MF'''
+        
+        proguard_config.write_text(config_content)
+        
+        print("[+] ProGuard integration completed")
+    
+    def _generate_custom_proguard_rules(self) -> str:
+        """Generate custom ProGuard rules for maximum obfuscation"""
+        return '''-keepclasseswithmembernames,includedescriptorclasses class * {
+    native <methods>;
+}
+
+# Keep Application class
+-keep public class * extends android.app.Application
+
+# Keep Service classes
+-keep public class * extends android.app.Service
+
+# Keep BroadcastReceiver classes
+-keep public class * extends android.content.BroadcastReceiver
+
+# Obfuscate everything else aggressively
+-keepclassmembers class * {
+    !private <fields>;
+    !private <methods>;
+}
+
+# Advanced obfuscation
+-renamesourcefileattribute SourceFile
+-keepattributes SourceFile,LineNumberTable
+
+# String obfuscation
+-adaptclassstrings
+
+# Control flow obfuscation
+-optimizations !code/simplification/advanced
+
+# Remove debug info
+-assumenosideeffects class android.util.Log {
+    public static boolean isLoggable(java.lang.String, int);
+    public static int v(...);
+    public static int i(...);
+    public static int w(...);
+    public static int d(...);
+    public static int e(...);
+}
+
+# Custom naming strategy
+-obfuscationdictionary obfuscation-dictionary.txt
+-classobfuscationdictionary class-dictionary.txt
+-packageobfuscationdictionary package-dictionary.txt'''
+    
+    def implement_control_flow_flattening(self, smali_code: str) -> str:
+        """Implement control flow flattening to break analysis tools"""
+        print("[+] Implementing control flow flattening...")
+        
+
+        method_pattern = r'(\.method.*?\n)(.*?)(\.end method)'
+        
+        def flatten_method(match):
+            method_start = match.group(1)
+            method_body = match.group(2)
+            method_end = match.group(3)
+            
+
+            flattened_body = self._flatten_control_flow(method_body)
+            
+            return method_start + flattened_body + method_end
+        
+        flattened_code = re.sub(method_pattern, flatten_method, smali_code, flags=re.DOTALL)
+        return flattened_code
+    
+    def _flatten_control_flow(self, method_body: str) -> str:
+        """Flatten control flow using state machine pattern"""
+        lines = method_body.strip().split('\n')
+        flattened_lines = []
+        
+
+        flattened_lines.extend([
+            "
+            "    .local v15, \"state\":I",
+            "    const/4 v15, 0x0",
+            "",
+            "    :state_loop",
+            "    packed-switch v15, :pswitch_data_0",
+            "",
+            "    :pswitch_0
+        ])
+        
+
+        state_counter = 0
+        for i, line in enumerate(lines):
+            if line.strip() and not line.strip().startswith('
+                flattened_lines.append(f"    {line.strip()}")
+                
+
+                if i < len(lines) - 1:
+                    state_counter += 1
+                    flattened_lines.extend([
+                        f"    const/4 v15, {state_counter}",
+                        "    goto :state_loop",
+                        "",
+                        f"    :pswitch_{state_counter}
+                    ])
+        
+
+        flattened_lines.extend([
+            "",
+            "    :pswitch_data_0",
+            "    .packed-switch 0x0"
+        ])
+        
+        for i in range(state_counter + 1):
+            flattened_lines.append(f"        :pswitch_{i}")
+        
+        flattened_lines.append("    .end packed-switch")
+        
+        return '\n'.join(flattened_lines)
+    
+    def add_dead_code_injection(self, smali_code: str) -> str:
+        """Add dead code injection to confuse static analysis"""
+        print("[+] Injecting dead code...")
+        
+        dead_code_snippets = [
+            self._generate_fake_crypto_code(),
+            self._generate_fake_network_code(),
+            self._generate_fake_file_operations(),
+            self._generate_mathematical_dead_code()
+        ]
+        
+        lines = smali_code.split('\n')
+        result_lines = []
+        
+        for line in lines:
+            result_lines.append(line)
+            
+
+            if '.method' in line and random.randint(1, 3) == 1:
+                dead_snippet = random.choice(dead_code_snippets)
+                result_lines.append(dead_snippet)
+        
+        return '\n'.join(result_lines)
+    
+    def _generate_fake_crypto_code(self) -> str:
+        """Generate fake cryptographic operations"""
+        return '''    # Fake crypto operation - never executed
+    const/4 v13, 0x0
+    if-eqz v13, :skip_fake_crypto
+    
+    const-string v10, "AES/CBC/PKCS5Padding"
+    invoke-static {v10}, Ljavax/crypto/Cipher;->getInstance(Ljava/lang/String;)Ljavax/crypto/Cipher;
+    move-result-object v11
+    
+    const/16 v12, 0x10
+    new-array v12, v12, [B
+    invoke-virtual {v11, v12}, Ljavax/crypto/Cipher;->doFinal([B)[B
+    
+    :skip_fake_crypto'''
+    
+    def _generate_fake_network_code(self) -> str:
+        """Generate fake network operations"""
+        return '''    # Fake network operation - never executed
+    const/4 v13, 0x0
+    if-eqz v13, :skip_fake_network
+    
+    new-instance v8, Ljava/net/URL;
+    const-string v9, "https://example.com/api"
+    invoke-direct {v8, v9}, Ljava/net/URL;-><init>(Ljava/lang/String;)V
+    
+    invoke-virtual {v8}, Ljava/net/URL;->openConnection()Ljava/net/URLConnection;
+    move-result-object v7
+    
+    :skip_fake_network'''
+    
+    def _generate_fake_file_operations(self) -> str:
+        """Generate fake file operations"""
+        return '''    # Fake file operation - never executed
+    const/4 v13, 0x0
+    if-eqz v13, :skip_fake_file
+    
+    new-instance v6, Ljava/io/File;
+    const-string v5, "/system/bin/su"
+    invoke-direct {v6, v5}, Ljava/io/File;-><init>(Ljava/lang/String;)V
+    
+    invoke-virtual {v6}, Ljava/io/File;->exists()Z
+    move-result v4
+    
+    :skip_fake_file'''
+    
+    def _generate_mathematical_dead_code(self) -> str:
+        """Generate complex mathematical operations that are never executed"""
+        return '''    # Mathematical dead code - never executed
+    const/4 v13, 0x0
+    if-eqz v13, :skip_math
+    
+    const/16 v3, 0x539
+    const/16 v2, 0x2a
+    mul-int v1, v3, v2
+    
+    const/16 v0, 0x7b
+    div-int/2addr v1, v0
+    
+    rem-int/lit8 v1, v1, 0xf
+    
+    :skip_math'''
+    
+    def create_obfuscation_dictionaries(self, project_dir: Path) -> None:
+        """Create custom obfuscation dictionaries for ProGuard"""
+        print("[+] Creating obfuscation dictionaries...")
+        
+
+        confusing_names = [
+            'O0O0O0O0', 'Il1Il1Il1', 'a1a1a1a1', 'b2b2b2b2',
+            'OOOO0000', 'llll1111', 'IIII1111', 'aaaa0000',
+            'O0O0', 'Il1I', 'a1a1', 'b2b2', 'c3c3', 'd4d4',
+            'ο0ο0', 'ι1ι1', 'α1α1', 'β2β2'
+        ]
+        
+
+        class_dict = project_dir / "class-dictionary.txt"
+        class_dict.write_text('\n'.join([f"Class{name}" for name in confusing_names]))
+        
+
+        package_dict = project_dir / "package-dictionary.txt"
+        package_names = [f"pkg{name.lower()}" for name in confusing_names]
+        package_dict.write_text('\n'.join(package_names))
+        
+
+        obfuscation_dict = project_dir / "obfuscation-dictionary.txt"
+        method_names = confusing_names + [f"method{i}" for i in range(100)]
+        obfuscation_dict.write_text('\n'.join(method_names))
+        
+        print("[+] Obfuscation dictionaries created")
+
     def _collect_identifiers(self, smali_files: List[Path]) -> None:
         """Collect all method, field, and class identifiers"""
         for smali_file in smali_files:
             content = smali_file.read_text()
             
-            # Collect class names
+
             class_matches = re.findall(r'\.class.*?L([^;]+);', content)
             for class_name in class_matches:
                 if self._should_obfuscate_identifier(class_name):
                     self.class_registry[class_name] = None
             
-            # Collect method names
+
             method_matches = re.findall(r'\.method.*?(\w+)\(', content)
             for method_name in method_matches:
                 if self._should_obfuscate_identifier(method_name):
@@ -340,12 +602,12 @@ class AdvancedObfuscator:
     def _generate_unicode_confused_name(self) -> str:
         """Generate names using similar Unicode characters"""
         confusable_chars = {
-            'a': ['а', 'а'],  # Cyrillic 'a'
-            'e': ['е', 'е'],  # Cyrillic 'e'  
-            'o': ['о', 'о'],  # Cyrillic 'o'
-            'p': ['р', 'р'],  # Cyrillic 'p'
-            'c': ['с', 'с'],  # Cyrillic 'c'
-            'x': ['х', 'х'],  # Cyrillic 'x'
+            'a': ['а', 'а'],
+            'e': ['е', 'е'],
+            'o': ['о', 'о'],
+            'p': ['р', 'р'],
+            'c': ['с', 'с'],
+            'x': ['х', 'х'],
         }
         
         base_name = self._generate_simple_name()
@@ -363,20 +625,20 @@ class AdvancedObfuscator:
         """Apply obfuscation to individual smali file"""
         content = smali_file.read_text()
         
-        # String obfuscation with enhanced encryption
+
         content = self._obfuscate_strings(content)
         
-        # Method name obfuscation
+
         content = self._obfuscate_method_names(content)
         
-        # Class name obfuscation
+
         content = self._obfuscate_class_names(content)
         
-        # Control flow obfuscation
+
         if self.level in ["strong", "maximum"]:
             content = self._obfuscate_control_flow(content)
         
-        # Add anti-debugging checks
+
         if self.level == "maximum":
             content = self._add_anti_debugging(content)
         
@@ -387,29 +649,29 @@ class AdvancedObfuscator:
         def replace_string(match):
             original_string = match.group(1)
             
-            if len(original_string) < 3:  # Skip very short strings
+            if len(original_string) < 3:
                 return match.group(0)
             
-            # Multi-layer encryption
+
             encrypted = self._multi_layer_encrypt(original_string)
             obfuscated_call = self._generate_string_decryption_call(encrypted)
             
-            return f'# Original: {original_string}\n    {obfuscated_call}'
+            return f'
         
-        # Match const-string instructions
+
         pattern = r'const-string [vp]\d+, "(.*?)"'
         return re.sub(pattern, replace_string, content, flags=re.DOTALL)
 
     def _multi_layer_encrypt(self, plaintext: str) -> str:
         """Apply multiple encryption layers"""
-        # Layer 1: XOR with key
+
         key_bytes = self.key
         xored = bytes([b ^ key_bytes[i % len(key_bytes)] for i, b in enumerate(plaintext.encode())])
         
-        # Layer 2: Base64 encoding
+
         b64_encoded = base64.b64encode(xored)
         
-        # Layer 3: Character substitution
+
         substituted = self._apply_char_substitution(b64_encoded.decode())
         
         return base64.b64encode(substituted.encode()).decode()
@@ -448,7 +710,7 @@ class AdvancedObfuscator:
 
     def _obfuscate_control_flow(self, content: str) -> str:
         """Obfuscate control flow"""
-        # Add dummy conditional branches
+
         return self._add_dummy_branches(content)
 
     def _add_dummy_branches(self, content: str) -> str:
@@ -459,7 +721,7 @@ class AdvancedObfuscator:
         for line in lines:
             modified_lines.append(line)
             
-            # Add dummy branch after method declarations
+
             if '.method' in line and 'static' in line:
                 dummy_branch = '''    # Dummy branch for control flow obfuscation
     const/4 v15, 0x1
@@ -477,7 +739,7 @@ class AdvancedObfuscator:
     def _add_decoy_code(self, smali_dir: Path) -> None:
         """Add decoy classes and methods to confuse analysis"""
         decoy_classes = [
-            'Analytics', 'Logger', 'Utils', 'Helper', 'Manager', 
+            'Analytics', 'Logger', 'Utils', 'Helper', 'Manager',
             'Service', 'Controller', 'Handler', 'Processor', 'Validator'
         ]
         

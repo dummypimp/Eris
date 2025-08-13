@@ -1,4 +1,3 @@
-
 "use client"
 
 import {
@@ -54,12 +53,12 @@ const getDeviceConfig = (device: Device) => {
 
 export function Settings({ onDeviceDeselect }: SettingsProps) {
     const [devices, setDevices] = useState<Device[]>([]);
-    
+
     const handleRemoveDevice = (guid: string) => {
         setDevices(devices.filter(d => d.guid !== guid));
         onDeviceDeselect();
     };
-    
+
     return (
         <Sheet>
             <SheetTrigger asChild>
@@ -105,7 +104,7 @@ export function Settings({ onDeviceDeselect }: SettingsProps) {
                                           </div>
                                           <div>
                                             <Label>JSON Configuration</Label>
-                                            <Textarea 
+                                            <Textarea
                                               defaultValue={getDeviceConfig(device)}
                                               rows={10}
                                               className="font-code text-xs"

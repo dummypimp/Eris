@@ -1,15 +1,15 @@
-#!/usr/bin/env python3
+
 """
 HTTPS Beacon C2 Profile Description for Mythic
 """
 import os
 import sys
 
-# Add mythic container to path if not available
+
 try:
-    from mythic_container import C2ProfileBase, C2Profile, C2ProfileParameter, C2ProfileParameterType # type: ignore
+    from mythic_container import C2ProfileBase, C2Profile, C2ProfileParameter, C2ProfileParameterType
 except ImportError:
-    # Fallback definitions for development/testing
+
     class C2ProfileBase:
         pass
     
@@ -30,7 +30,7 @@ except ImportError:
         Boolean = "boolean"
 
 try:
-    from aiohttp import web, ClientSession # type: ignore
+    from aiohttp import web, ClientSession
 except ImportError:
     web = None
     ClientSession = None
@@ -66,7 +66,7 @@ class HTTPSBeaconProfile(C2Profile):
             required=True
         ),
         C2ProfileParameter(
-            name="callback_port", 
+            name="callback_port",
             description="HTTPS callback port",
             default_value=443,
             parameter_type=C2ProfileParameterType.Number,
@@ -81,7 +81,7 @@ class HTTPSBeaconProfile(C2Profile):
         ),
         C2ProfileParameter(
             name="post_uri",
-            description="URI path for response submissions", 
+            description="URI path for response submissions",
             default_value="/api/v1/mobile/submit",
             parameter_type=C2ProfileParameterType.String,
             required=True

@@ -6,8 +6,8 @@ import time
 from typing import Dict, List, Any
 
 try:
-    import firebase_admin # type: ignore
-    from firebase_admin import credentials, messaging # type: ignore
+    import firebase_admin
+    from firebase_admin import credentials, messaging
     FCM_AVAILABLE = True
 except ImportError:
     FCM_AVAILABLE = False
@@ -36,7 +36,7 @@ class FCMPush:
     
     def post_response(self, device_id: str, encrypted_data: bytes) -> bool:
         """Handle response from device"""
-        # Store response for processing
+
         return True
     
     def send_push_task(self, device_token: str, task: Dict) -> bool:

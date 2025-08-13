@@ -1,0 +1,4 @@
+aiohttp==3.9.1
+aiohttp-cors==0.7.0
+cryptography>=41.0.0
+ssl-utils>=0.3.0

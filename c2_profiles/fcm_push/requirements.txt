@@ -1,0 +1,4 @@
+firebase-admin>=6.2.0
+aiohttp>=3.8.0
+pyjnius>=1.4.0  # For Android Java bindings
+plyer>=2.1      # Cross-platform Android APIs

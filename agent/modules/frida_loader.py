@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 """
 Frida dynamic instrumentation module for runtime app analysis
 """
@@ -44,17 +44,17 @@ class FridaModule:
             if not target_app or not script_code:
                 return {"error": "target_app and script_code required"}
             
-            # Create temporary script file
+
             with tempfile.NamedTemporaryFile(mode='w', suffix='.js', delete=False) as f:
                 f.write(script_code)
                 script_path = f.name
             
-            # Execute frida command
+
             cmd = [
                 "frida",
-                "-U",  # USB device
-                "-f", target_app,  # Spawn target app
-                "-l", script_path,  # Load script
+                "-U",
+                "-f", target_app,
+                "-l", script_path,
                 "--no-pause"
             ]
             
@@ -74,7 +74,7 @@ class FridaModule:
                         "status": "active"
                     }
                     
-                    # Log the injection
+
                     self.agent.offline_logger.log_event("frida_injected", {
                         "script_name": script_name,
                         "target_app": target_app,
@@ -93,7 +93,7 @@ class FridaModule:
                     }
                     
             finally:
-                # Clean up temp file
+
                 Path(script_path).unlink(missing_ok=True)
                 
         except subprocess.TimeoutExpired:
@@ -107,7 +107,7 @@ class FridaModule:
             script_name = args.get("script_name")
             
             if script_name in self.active_scripts:
-                # Mark as detached (actual detachment would require process management)
+
                 self.active_scripts[script_name]["status"] = "detached"
                 self.active_scripts[script_name]["detached_at"] = time.time()
                 
@@ -124,7 +124,7 @@ class FridaModule:
     def list_processes(self) -> Dict[str, Any]:
         """List running processes for Frida targeting"""
         try:
-            cmd = ["frida-ps", "-U"]  # List processes on USB device
+            cmd = ["frida-ps", "-U"]
             
             result = subprocess.run(
                 cmd,
@@ -135,7 +135,7 @@ class FridaModule:
             
             if result.returncode == 0:
                 processes = []
-                for line in result.stdout.strip().split('\n')[1:]:  # Skip header
+                for line in result.stdout.strip().split('\n')[1:]:
                     parts = line.strip().split()
                     if len(parts) >= 2:
                         processes.append({
@@ -172,7 +172,7 @@ class FridaModule:
             if not target_app or not script_code:
                 return {"error": "target_app and script_code required"}
             
-            # Create temporary script file
+
             with tempfile.NamedTemporaryFile(mode='w', suffix='.js', delete=False) as f:
                 f.write(script_code)
                 script_path = f.name

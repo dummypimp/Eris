@@ -29,6 +29,51 @@ pathlib2==2.3.7
 # Compression
 gzip-reader==0.1
 
+# SQLCipher for encrypted database storage
+pysqlcipher3==1.2.0
+sqlcipher==0.5.4
+
+# HTTP requests for sync
+urllib3==2.0.7
+
+# Concurrency and threading
+concurrent-futures==3.1.1
+
+# Type hints support
+typing-extensions==4.8.0
+
+# Enhanced subprocess handling
+psutil==5.9.6
+
+# Advanced cryptography for Android 14-16
+argon2-cffi==23.1.0
+scrypt==0.8.20
+
 # Mythic integration
 mythic-payloadtype-container==0.1.18
 mythic-container==0.1.18
+
+# Production hardening dependencies
+psutil==5.9.6
+statistics==1.0.3.5
+chartjs==3.9.1
+
+# Security hardening
+cryptography==41.0.4
+argon2-cffi==23.1.0
+
+# Performance monitoring
+psutil==5.9.6
+pympler==0.9
+memory-profiler==0.61.0
+
+# Dashboard and UI
+flask==3.0.0
+websockets==12.0
+jinja2==3.1.2
+chartjs==3.9.1
+
+# Analytics and reporting
+numpy==1.25.2
+pandas==2.1.1
+matplotlib==3.7.2
