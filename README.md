@@ -141,13 +141,17 @@ Eris includes a sophisticated web-based dashboard built with modern technologies
 ### 📱 Dashboard Screenshots
 
 <p align="center">
-  <img src="docs/screenshots/device-selection.png" alt="Device Selection" width="45%">
-  <img src="docs/screenshots/main-dashboard.png" alt="Main Dashboard" width="45%">
+  <img src="assets/Device selection.png" alt="Device Selection" width="45%">
+  <img src="assets/Dashboard.png" alt="Main Dashboard" width="45%">
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/file-explorer.png" alt="File Explorer" width="45%">
-  <img src="docs/screenshots/surveillance.png" alt="Surveillance Controls" width="45%">
+  <img src="assets/device info.png" alt="Device Information" width="45%">
+  <img src="assets/terminal.png" alt="Terminal Interface" width="45%">
+</p>
+
+<p align="center">
+  <img src="assets/Frida.png" alt="Frida Toolkit" width="45%">
 </p>
 
 ---

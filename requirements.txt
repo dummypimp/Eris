@@ -77,3 +77,39 @@ chartjs==3.9.1
 numpy==1.25.2
 pandas==2.1.1
 matplotlib==3.7.2
+
+# Frida Integration
+frida-tools==16.1.4
+frida==16.1.4
+
+# Enhanced Shell Interface
+websockets==12.0
+aiohttp==3.9.1
+rich==13.7.0
+click==8.1.7
+tabulate==0.9.0
+
+# Android Development Tools
+pure-python-adb==0.3.0.dev0
+python-adb==0.4.4
+
+# Enhanced Obfuscation Support
+colorama==0.4.6
+loguru==0.7.2
+
+# Testing Framework
+pytest==7.4.3
+pytest-asyncio==0.23.2
+
+# Network Tools for Advanced Features
+netifaces==0.11.0
+scapy==2.5.0
+
+# File System Monitoring
+watchdog==3.0.0
+
+# Platform Detection
+distro==1.8.0
+
+# Enhanced JSON Processing
+orjson==3.9.10

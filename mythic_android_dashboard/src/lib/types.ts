@@ -130,3 +130,69 @@ export interface TimelineEvent {
     timestamp: number;
     metadata?: Record<string, any>;
 }
+
+// Frida-specific types
+export interface FridaSession {
+    id: string;
+    deviceId: string;
+    targetPackage: string;
+    created: string;
+    status: 'active' | 'inactive' | 'error';
+    attached: boolean;
+    scripts: FridaScript[];
+}
+
+export interface FridaScript {
+    id: string;
+    name: string;
+    type: 'predefined' | 'custom';
+    description: string;
+    content: string;
+    status: 'loaded' | 'running' | 'stopped' | 'error';
+    injected: boolean;
+    targetPackage?: string;
+    lastExecuted?: string;
+    output?: string[];
+}
+
+export interface FridaServerStatus {
+    deviceId: string;
+    running: boolean;
+    version: string;
+    port: number;
+    activeSessions: number;
+    architecture: string;
+    uptime: number;
+    lastPing: string;
+}
+
+export interface FridaProcess {
+    pid: number;
+    name: string;
+    package?: string;
+    user?: string;
+    arch?: string;
+}
+
+export interface FridaHook {
+    id: string;
+    sessionId: string;
+    className: string;
+    methodName: string;
+    hookType: 'before' | 'after' | 'replace';
+    active: boolean;
+    hitCount: number;
+    lastHit?: string;
+    script: string;
+}
+
+export interface FridaCommand {
+    id: string;
+    sessionId: string;
+    action: 'create_session' | 'execute_script' | 'inject_script' | 'hook_function' | 'call_function' | 'list_processes' | 'attach_process' | 'detach_process';
+    parameters: Record<string, any>;
+    timestamp: number;
+    status: 'pending' | 'executing' | 'completed' | 'failed';
+    result?: any;
+    error?: string;
+}
