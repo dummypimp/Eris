@@ -20,7 +20,7 @@
 
 ## 🌟 Overview
 
-**Eris** is a comprehensive Android Command & Control platform designed for advanced persistence, surveillance, and data exfiltration capabilities. Built specifically for the [Mythic 3.3 Framework](https://github.com/its-a-feature/Mythic), Eris provides sophisticated Android exploitation capabilities with support for Android 12-16 (API levels 31-36) and advanced anti-detection features.
+**Eris** is a comprehensive Android Command & Control platform designed for advanced persistence, surveillance, and data exfiltration capabilities. Built specifically for the [Mythic 3.3 Framework](https://github.com/its-a-feature/Mythic), Eris provides sophisticated Android exploitation capabilities with support for Android 12-16 (API levels 31-36[theoretical]) and advanced anti-detection features.
 
 ### 🎯 Key Features
 
@@ -407,16 +407,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support & Contact
 
 - **GitHub Issues**: [Report Bugs & Feature Requests](https://github.com/dummypimp/Eris/issues)
-- **Documentation**: [Complete Documentation Hub](https://eris-docs.example.com)
-- **Community**: [Discord Server](https://discord.gg/eris-android)
-- **Professional Support**: [enterprise@eris-agent.com](mailto:enterprise@eris-agent.com)
 
 ---
 
 <p align="center">
   <strong>🎯 Happy Hunting with Eris! 🎯</strong>
-</p>
-
-<p align="center">
-  <img src="assets/Eris.png" alt="Eris Logo" width="100">
 </p>
